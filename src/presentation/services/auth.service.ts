@@ -1,7 +1,7 @@
 import { UserModel } from "../../data/mongo/model";
 import { CustomError } from "../../domain";
 import { RegisterUserDto } from "../../domain/dtos";
-
+import { UserEntity } from "../../domain/entities";
 
 export class AuthService {
     //DI
@@ -19,15 +19,18 @@ export class AuthService {
         //idealmente por si una condicion no se cumple capturamos el error si algo es inesperado
         try {
             const user = new UserModel( registerUserDto )           // crea el usuario
-
             await user.save();
-
-            return user;
-
+            
+            const userEntity = UserEntity.fromObject( user ); 
+            const { password, ...userRegister } = userEntity
+        
+            return { userRegister,                                // tercer return un objeto con dos valores
+                token: 'ABC'
+            };
+            
         } catch (error) {
             throw CustomError.internalServer(`${error}`);
         }
-
         return 'todo ok authService temporal'
     }
 }
