@@ -14,10 +14,20 @@ export class AuthService {
 
         // proceso para registrar el usuario
         const existUser = await UserModel.findOne({ email: registerUserDto.email })
-
         if( existUser ) throw CustomError.badRequest('Email already exist');
 
-        return 'todo ok authService temporal'
+        //idealmente por si una condicion no se cumple capturamos el error si algo es inesperado
+        try {
+            const user = new UserModel( registerUserDto )           // crea el usuario
 
+            await user.save();
+
+            return user;
+
+        } catch (error) {
+            throw CustomError.internalServer(`${error}`);
+        }
+
+        return 'todo ok authService temporal'
     }
 }

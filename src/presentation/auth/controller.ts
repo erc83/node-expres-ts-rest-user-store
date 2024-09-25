@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RegisterUserDto } from "../../domain/dtos";
 import { AuthService } from "../services/auth.service";
+import { CustomError } from "../../domain";
 
 
 export class AuhtController {
@@ -10,6 +11,18 @@ export class AuhtController {
 
     }
 
+    // manejo del error
+    private handleError = (error: unknown, res: Response ) => {
+        if ( error instanceof CustomError ) {
+            return res.status( error.statusCode).json({ error: error.message });
+        }
+        
+        console.log(`${ error }`)
+        return res.status(500).json({ error: 'Internal server error '})
+    }
+
+
+
     // aqui manejamos el metodo de esta manera 
     register = (req: Request, res: Response ) => {
 
@@ -18,7 +31,7 @@ export class AuhtController {
 
         this.authService.registerUser(registerUserDto!)   //signo de exclamacion porque lo tenemos
             .then((user) => res.json(user))
-
+            .catch( error => this.handleError(error, res) );
 
         //res.json(registerUserDto)
     }
