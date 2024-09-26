@@ -2,6 +2,7 @@ import { UserModel } from "../../data/mongo/model";
 import { CustomError } from "../../domain";
 import { RegisterUserDto } from "../../domain/dtos";
 import { UserEntity } from "../../domain/entities";
+import { bcryptAdapter } from "../../config";
 
 export class AuthService {
     //DI
@@ -19,6 +20,10 @@ export class AuthService {
         //idealmente por si una condicion no se cumple capturamos el error si algo es inesperado
         try {
             const user = new UserModel( registerUserDto )           // crea el usuario
+
+            // Encriptar contraseña antes de guardar en la base de datos
+            user.password = bcryptAdapter.hash( registerUserDto.password );
+
             await user.save();
             
             const userEntity = UserEntity.fromObject( user ); 
