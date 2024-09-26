@@ -1,8 +1,9 @@
 import { UserModel } from "../../data/mongo/model";
 import { CustomError } from "../../domain";
-import { RegisterUserDto } from "../../domain/dtos";
+import { RegisterUserDto, LoginUserDto } from "../../domain/dtos";
 import { UserEntity } from "../../domain/entities";
 import { bcryptAdapter } from "../../config";
+
 
 export class AuthService {
     //DI
@@ -37,5 +38,27 @@ export class AuthService {
             throw CustomError.internalServer(`${error}`);
         }
         return 'todo ok authService temporal'
+    }
+
+    public async loginUser( loginUserDto: LoginUserDto ) {
+
+        try {            
+            const existUser = await UserModel.findOne({ email: loginUserDto.email }).populate("role")
+            if ( !existUser ) throw CustomError.badRequest('Email not exist')
+            
+            const matchPassword = bcryptAdapter.compare( loginUserDto.password, existUser.password )
+            if( !matchPassword ) throw CustomError.badRequest('Invalid Password')   
+            
+            const userEntity = UserEntity.fromObject( existUser )
+            const { password, ...userLogin } = userEntity ;         // desestructuracion del objeto UserLogin
+
+            return {
+                userLogin,
+                token:'ABC'
+            };
+                
+        } catch (error) {
+            throw CustomError.internalServer(`${ error }`)
+        }
     }
 }
