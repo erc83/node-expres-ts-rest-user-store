@@ -2,7 +2,7 @@ import { UserModel } from "../../data/mongo/model";
 import { CustomError } from "../../domain";
 import { RegisterUserDto, LoginUserDto } from "../../domain/dtos";
 import { UserEntity } from "../../domain/entities";
-import { bcryptAdapter } from "../../config";
+import { bcryptAdapter, JwtGenerator } from "../../config";
 
 
 export class AuthService {
@@ -52,9 +52,12 @@ export class AuthService {
             const userEntity = UserEntity.fromObject( existUser )
             const { password, ...userLogin } = userEntity ;         // desestructuracion del objeto UserLogin
 
+            const token = await JwtGenerator.generateToken({ id: userLogin.id });
+            if( !token ) throw CustomError.internalServer('Error while creating JWT')
+
             return {
                 userLogin,
-                token:'ABC'
+                token: token, 
             };
                 
         } catch (error) {
