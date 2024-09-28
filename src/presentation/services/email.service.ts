@@ -15,7 +15,7 @@ export interface Attachement {
 
 export class EmailService {
 
-    private transporter: Transporter 
+    private transporter: Transporter; 
     
     constructor(
         // dependencia oculta explicita, cuando se llame emailService me tiene que pedir
