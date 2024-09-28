@@ -24,10 +24,14 @@ export class JwtGenerator {
 
     static validateToken( token: string ) {
 
+        // verificacion json web token
+        return new Promise( (resolve) => {
+            jwt.verify( token, JWT_SECRET, ( err, decoded ) => {
+                if(err) return resolve(null);
 
-        // return ???;
+                return resolve( decoded )
+            });
+        })
     }
-
-
 }
 
