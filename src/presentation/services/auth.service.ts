@@ -35,9 +35,12 @@ export class AuthService {
             
             const userEntity = UserEntity.fromObject( user ); 
             const { password, ...userRegister } = userEntity
-        
+
+            const token = await JwtGenerator.generateToken({ id: user.id });
+            if ( !token ) throw CustomError.internalServer('Error while creating JWT');
+
             return { userRegister,                                // tercer return un objeto con dos valores
-                token: 'ABC'
+                token: token,
             };
             
         } catch (error) {
