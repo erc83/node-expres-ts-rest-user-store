@@ -13,6 +13,7 @@ static get routes(): Router {
         envs.MAILER_SERVICE,
         envs.MAILER_EMAIL,
         envs.MAILER_SECRET_KEY,
+        envs.SEND_EMAIL,
     );
     
     const authService = new AuthService( emailService ); //instancia authService que la pide el controller y se agrego al constructor
