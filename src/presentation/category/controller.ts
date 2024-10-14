@@ -30,18 +30,14 @@ export class CategoryController {
             .then( category => res.status(201).json( category ))
             .catch( error => this.handleError( error, res ))
 
-
-
-
         //res.json(createCategoryDto)
 
     }
 
     getCategory =  async (req: Request, res: Response) => {
 
-        res.json('Get Category')
-
+        this.categoryService.getCategories()
+            .then(categories => res.json( categories))
+            .catch( error => this.handleError( error, res ))
     }
-
-
 }
