@@ -22,14 +22,14 @@ export class JwtGenerator {
         })
     }
 
-    static validateToken( token: string ) {
+    static validateToken<T>( token: string ): Promise<T | null> {                 //extrae el payload del jwt
 
         // verificacion json web token
         return new Promise( (resolve) => {
             jwt.verify( token, JWT_SECRET, ( err, decoded ) => {
                 if(err) return resolve(null);
 
-                return resolve( decoded )
+                return resolve( decoded as T)
             });
         })
     }
