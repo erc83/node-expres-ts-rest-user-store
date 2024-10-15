@@ -43,11 +43,8 @@ export class CategoryController {
 
         if( error ) return res.status(400).json({ error })
 
-
-        res.json(paginationDto)
-
-        //this.categoryService.getCategories()
-        //    .then(categories => res.json( categories))
-        //    .catch( error => this.handleError( error, res ))
+        this.categoryService.getCategories( paginationDto! )            // ! siempre se tiene
+            .then(categories => res.json( categories))
+            .catch( error => this.handleError( error, res ))
     }
 }
