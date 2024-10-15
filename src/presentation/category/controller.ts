@@ -1,6 +1,6 @@
 import { Request, Response} from 'express'
 import { CustomError } from '../../domain';
-import { CreateCategoryDto } from '../../domain/dtos';
+import { CreateCategoryDto, PaginationDto } from '../../domain/dtos';
 import { CategoryService } from '../services/category.service';
 
 export class CategoryController {
@@ -35,9 +35,19 @@ export class CategoryController {
     }
 
     getCategory =  async (req: Request, res: Response) => {
+        
 
-        this.categoryService.getCategories()
-            .then(categories => res.json( categories))
-            .catch( error => this.handleError( error, res ))
+        const { page = 1, limit = 10} = req.query
+
+        const [error, paginationDto] = PaginationDto.create( +page, +limit )    // +  transforma en numero
+
+        if( error ) return res.status(400).json({ error })
+
+
+        res.json(paginationDto)
+
+        //this.categoryService.getCategories()
+        //    .then(categories => res.json( categories))
+        //    .catch( error => this.handleError( error, res ))
     }
 }
