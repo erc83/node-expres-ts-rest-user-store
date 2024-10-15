@@ -38,16 +38,32 @@ export class CategoryService {
 
         const { page, limit } = paginationDto
 
-
-
         try {
-            const categories = await CategoryModel.find()
-                .skip( (page - 1) * limit )
-                .limit( limit )
+            //const total = await CategoryModel.countDocuments()
+            //const categories = await CategoryModel.find()
+            //    .skip( (page - 1) * limit )
+            //    .limit( limit )
+
+            // ejecucion de manera simultanea llamado total y de categories en una promesa
+            const [total, categories] = await Promise.all( [
+                CategoryModel.countDocuments(),
+                CategoryModel.find()
+                    .skip( (page - 1) * limit )
+                    .limit( limit )
+            ] )
+            // calculo si hay una siguiente pagina
+            const totalPages = Math.ceil(total / limit)
+            const nextPage = (page < totalPages) 
+                                ? `/api/categories?page=${ (page + 1 ) }&limit=${ limit }`: null
+            const prevPage = (page - 1 > 0 ) 
+                                ? `/api/categories?page=${ (page - 1 ) }&limit=${ limit }`: null
 
             return {
                 page: page,
                 limit: limit,
+                total: total,
+                next: nextPage,
+                prev: prevPage,
 
                 categories: categories.map(category => {
                     return {
