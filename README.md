@@ -12,7 +12,8 @@ Cada paso de su configuración ya se ha realizado para manejar postgres o mongod
 3. En caso de necesitar base de datos, 
     - renombrar .env.template a .env
     - configurar el docker-compose.yml y ejecutar `docker-compose up -d` para levantar los servicios deseados.
-4. Ejecutar `npm run dev` para levantar el proyecto en modo desarrollo
+4. Llenar la base de datos con los datos de prueba ejecutando `npm run seed`
+5. Ejecutar `npm run dev` para levantar el proyecto en modo desarrollo
 
 
 
