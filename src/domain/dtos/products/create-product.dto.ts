@@ -1,3 +1,4 @@
+import { Validators } from "../../../config"
 
 
 export class CreateProductDto {
@@ -24,7 +25,10 @@ export class CreateProductDto {
         
         if( !name ) return ['Missing name']
         if( !user ) return ['Missing user']
+        if( !Validators.isMongoID(user) ) return ['Invalid User ID']
+        
         if( !category ) return ['Missing category']
+        if( !Validators.isMongoID( category ) ) return ['Invalid Category ID']
         
         return [
             undefined, 
