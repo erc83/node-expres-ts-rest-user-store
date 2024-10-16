@@ -37,7 +37,10 @@ export class ProductService {
                 ProductModel.find()
                     .skip( (page - 1) * limit )
                     .limit( limit )
-                    // todo: populate
+                    .populate('user')
+                    .populate('category')
+                    
+                    //.populate('user', "name email") modificando aqui como se obtiene la data de user con sus propiedades
             ] )
             // calculo si hay una siguiente pagina
             const totalPages = Math.ceil(total / limit)
