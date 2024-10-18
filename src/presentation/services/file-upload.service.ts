@@ -25,11 +25,10 @@ export class FileUploadService {
         folder: string = 'uploads',
         validExtensions: string[] = ['png', 'jpg', 'jpeg', 'gif']
         
-        
     ) {
         try {
             const fileExtension = file.mimetype.split("/").at(1) ?? ''   // ?? ''   puede venir undefined
- 
+
             if( !validExtensions.includes( fileExtension ) ) {
                 throw CustomError.badRequest(`Invalid extension: ${ fileExtension }, valid one ${ validExtensions }`)
             }
@@ -51,15 +50,18 @@ export class FileUploadService {
         
     }
     
-    public uploadMultiple(
-        file: any[],
+    async uploadMultiple(
+        files: UploadedFile[],
         folder: string = 'uploads',
         validExtensions: string[] = ['png', 'jpg', 'jpeg', 'gif']
     ) {
+        //uploadSingle lo llamo por cada archivo que tenga aqui
+        const fileNames = await Promise.all(
+            files.map( file => this.uploadSingle( file, folder, validExtensions ))
+        )
 
+        return fileNames
     }
-
-
 
 }
 
