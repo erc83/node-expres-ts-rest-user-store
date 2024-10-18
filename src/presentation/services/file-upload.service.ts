@@ -1,12 +1,16 @@
 import path from 'path'
 import fs from 'fs'
 import { UploadedFile } from "express-fileupload";
+import { Uuid } from '../../config';
+
 
 
 export class FileUploadService {
 
-    //DI
-    constructor() {
+    //DI // recibir la fn de uuid o una por defecto
+    constructor(
+        private readonly uuid = Uuid.v4
+    ) {
 
     }
 
@@ -29,7 +33,11 @@ export class FileUploadService {
             const destination = path.resolve( __dirname, '../../../', folder )
             this.checkFolder( destination )
 
-            file.mv(destination + `/mi-imagen.${ fileExtension }`)
+            const fileName = `${ this.uuid() }.${ fileExtension }`
+
+            file.mv(`${ destination }/${ fileName }`)
+
+            return { fileName }
         
         } catch (error) {
             console.log(error)
