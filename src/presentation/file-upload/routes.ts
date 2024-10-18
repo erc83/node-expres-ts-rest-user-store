@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { FileUploadController } from './controller'
 import { FileUploadService } from '../services/file-upload.service'
 import { FileUploadMiddleware } from '../middlewares/file-upload.middleware'
+import { TypeFolderMiddleware } from '../middlewares/type-folder.middleware'
 
 
 export class FileUploadRoutes {
@@ -15,6 +16,7 @@ export class FileUploadRoutes {
         )
 
         router.use( FileUploadMiddleware.containFiles ) // se aplica a las dos rutas simultaneamente
+        router.use( TypeFolderMiddleware.validTypesFolder(['users', 'products', 'categories']) )
 
         // Definir las rutas
         // api/upload/single/<user|category|product>/
@@ -22,6 +24,9 @@ export class FileUploadRoutes {
         router.post('/single/:type', controller.uploadFile)
         
         router.post('/multiple/:type', controller.uploadMultipleFiles )    // segundo argumento el middleware o arreglo
+        
+        // pequeño detalle en express
+        //router.post('/multiple/:type', [TypeFolderMiddleware.validTypesFolder(['users', 'products', 'categories'])] , controller.uploadMultipleFiles )    // segundo argumento el middleware o arreglo
         
         return router
     }
